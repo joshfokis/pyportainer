@@ -75,7 +75,17 @@ class PyPortainer():
             verify=self.verifySSL)
         return r.json()
 
+    def endpoint_job(self, identifier, options):
+        r = requests.post(
+            f"{self.portainer_endpoint}/endpoints/{identifier}/job",
+            data=json.dumps(options),
+            headers={"Authorization": f"Bearer {self.token}"},
+            verify=self.verifySSL)
+        return r.json()
+
     def access_endpoint(self, identifier, options):
+        """Possibly depricated no info in docs"""
+        #TODO: Verify if this API call is available
         r = requests.put(
             f"{self.portainer_endpoint}/endpoints/{identifier}/access",
             data=json.dumps(options),
@@ -122,6 +132,30 @@ class PyPortainer():
     def get_stackfile(self, endpoint, stack):
         uri = f"/endpoints/{endpoint}/stacks/{stack}/stackfile"
         r = requests.get(
+            f"{self.portainer_endpoint}{uri}",
+            headers={"Authorization": f"Bearer {self.token}"},
+            verify=self.verifySSL)
+        return r.json()
+
+    def get_endpoint_containers(self, identifier):
+        uri = f"/endpoints/{identifier}/docker/containers/json"
+        r = requests.get(
+            f"{self.portainer_endpoint}{uri}",
+            headers={"Authorization": f"Bearer {self.token}"},
+            verify=self.verifySSL)
+        return r.json()
+
+    def start_endpoint_container(self, identifier, container_id):
+        uri = f"/endpoints/{identifier}/docker/containers/{container_id}/start"
+        r = requests.post(
+            f"{self.portainer_endpoint}{uri}",
+            headers={"Authorization": f"Bearer {self.token}"},
+            verify=self.verifySSL)
+        return r.json()
+
+    def stop_endpoint_container(self, identifier, container_id):
+        uri = f"/endpoints/{identifier}/docker/containers/{container_id}/stop"
+        r = requests.post(
             f"{self.portainer_endpoint}{uri}",
             headers={"Authorization": f"Bearer {self.token}"},
             verify=self.verifySSL)
